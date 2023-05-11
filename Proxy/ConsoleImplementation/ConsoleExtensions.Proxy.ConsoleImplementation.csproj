@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Lasse Sjørup</Authors>
+    <Description>Wraps System.Console in a interface for testability, injectability and general niceness.</Description>
+    <Summery>Wraps System.Console in a interface for testability, injectability and general niceness.</Summery>
+    <Copyright>Lasse Sjørup 2022</Copyright>
+    <PackageTags>Console, Dependency injection</PackageTags>
+    <AssemblyVersion>0.9.0.0</AssemblyVersion>
+    <FileVersion>0.9.0.0</FileVersion>
+    <Version>0.9.0-Dev</Version>
+    <Title>ConsoleExtensions Proxy ConsoleImplementation</Title>
+    <PackageProjectUrl>https://github.com/oswaldsql/ConsoleExtensions.Proxy/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/oswaldsql/ConsoleExtensions.Proxy/</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <NeutralLanguage>en-US</NeutralLanguage>
+
+    <AssemblyName>ConsoleExtensions.Proxy.ConsoleImplementation</AssemblyName>
+    <RootNamespace>ConsoleExtensions.Proxy</RootNamespace>
+    <LangVersion>default</LangVersion>
+    <PackageVersion>1.2.0</PackageVersion>
+    <PackageIcon>Icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Code\ConsoleExtensions\Proxy\ConsoleImplementation\ConsoleExtensions.Proxy.ConsoleImplementation.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Console" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreInterface\ConsoleExtensions.Proxy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Link>Icon.png</Link>
+    </None>
+  </ItemGroup>
+
+</Project>
