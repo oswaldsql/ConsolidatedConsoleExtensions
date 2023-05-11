@@ -1,4 +1,5 @@
-﻿namespace ConsoleExtensions.Proxy;
+﻿#nullable enable
+namespace ConsoleExtensions.Proxy;
 
 using System;
 

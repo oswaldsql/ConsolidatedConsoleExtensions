@@ -15,6 +15,8 @@ var prompt = proxy.Read<int>(config =>
     config.ValueConverter = s => int.Parse(s) * 10;
 });
 
+proxy.WriteLine($"You specified your age to be {prompt:D}");
+
 var timeSpan = proxy.Read<TimeSpan>(config =>
 {
     config.Message = "How long do you want to sleep? ";
@@ -23,4 +25,8 @@ var timeSpan = proxy.Read<TimeSpan>(config =>
     config.ValueConverter = TimeSpan.Parse;
 });
 
+proxy.WriteLine($"You wanted to sleep for {timeSpan.Minutes} minutes");
+
 var dayOfWeek = proxy.Read<DayOfWeek>("What day of the week do you want?");
+
+proxy.WriteLine($"You wanted {dayOfWeek}");

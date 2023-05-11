@@ -1,7 +1,7 @@
 namespace ConsoleExtensions.Reader.Tests;
 
 using System.Globalization;
-using ConsoleExtensions.Proxy.TestHelpers;
+using Proxy.TestHelpers;
 using Xunit.Abstractions;
 
 public class PromptForConvertableTypesTests
@@ -59,7 +59,7 @@ public class PromptForConvertableTypesTests
         Assert.Equal(expected, actual.GetType().Name);
         this.testOutputHelper.WriteLine(actual.GetType().Name);
     }
-    
+
     [Fact]
     public void GivenAPromptForATimeSpan_WhenGivenAValidValue_ThenACustomConverterShouldBeUsed()
     {
@@ -84,26 +84,27 @@ public class PromptForConvertableTypesTests
         proxy.Keys.Add("" + "\n");
 
         // Act
-        var actual = proxy.Read<TimeSpan>("Test", () => TimeSpan.FromMinutes(650));
+        var actual = proxy.Read("Test", () => TimeSpan.FromMinutes(650));
 
         // Assert
         Assert.Equal(TimeSpan.FromMinutes(650), actual);
     }
-    
+
     [Theory]
     [InlineData("Monday", DayOfWeek.Monday)]
-    [InlineData("monday", DayOfWeek.Monday)]    
-    [InlineData(" monday", DayOfWeek.Monday)]    
+    [InlineData("monday", DayOfWeek.Monday)]
+    [InlineData(" monday", DayOfWeek.Monday)]
     [InlineData("2", DayOfWeek.Tuesday)]
     [InlineData("", DayOfWeek.Sunday)]
-    public void GivenAPromptForAEnum_WhenGivenAValidValue_ThenTheExpectedValueShouldBeReturned(string input, DayOfWeek expected)
+    public void GivenAPromptForAEnum_WhenGivenAValidValue_ThenTheExpectedValueShouldBeReturned(string input,
+        DayOfWeek expected)
     {
         // Arrange
         var proxy = new TestProxy();
         proxy.Keys.Add(input + "\n");
 
         // Act
-        var actual = proxy.Read<DayOfWeek>("Test", () => DayOfWeek.Sunday);
+        var actual = proxy.Read("Test", () => DayOfWeek.Sunday);
 
         // Assert
         Assert.Equal(expected, actual);

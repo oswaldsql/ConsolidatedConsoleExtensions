@@ -4,7 +4,6 @@ using System;
 
 public static class StyleExtensions
 {
-    /// <inheritdoc />
     /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
     /// <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     public static IConsoleProxy SetColor(this IConsoleProxy proxy, ConsoleColor? foreground, ConsoleColor? background)
@@ -22,7 +21,6 @@ public static class StyleExtensions
         return proxy;
     }
 
-    /// <inheritdoc />
     /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
     /// <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     public static IConsoleProxy Style(this IConsoleProxy proxy, ConsoleStyle style)
@@ -31,7 +29,6 @@ public static class StyleExtensions
         return proxy;
     }
 
-    /// <inheritdoc />
     /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
     /// <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     public static IConsoleProxy Style(this IConsoleProxy proxy, StyleName name)
@@ -41,7 +38,6 @@ public static class StyleExtensions
     }
 
 	
-    /// <inheritdoc />
     /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
     /// <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     public static IConsoleProxy ResetStyle(this IConsoleProxy proxy)
@@ -50,7 +46,6 @@ public static class StyleExtensions
         return proxy;
     }
 	
-    /// <inheritdoc />
     /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
     /// <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     public static IConsoleProxy GetStyle(this IConsoleProxy proxy, out ConsoleStyle style)

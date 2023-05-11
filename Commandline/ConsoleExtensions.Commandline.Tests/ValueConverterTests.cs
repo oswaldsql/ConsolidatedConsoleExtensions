@@ -93,14 +93,15 @@ public class ValueConverterTests
                 firstConverterCalled = true;
                 return new CustomType(s);
             },
-            uri => throw new NotImplementedException());
+            _ => throw new NotImplementedException());
+
         modelMap.AddValueConverter(
             s =>
             {
                 lastConverterCalled = true;
                 return new CustomType(s);
             },
-            uri => throw new NotImplementedException());
+            _ => throw new NotImplementedException());
 
         // Act
         modelMap.SetOption("CustomTypeOption", "CustomValue");

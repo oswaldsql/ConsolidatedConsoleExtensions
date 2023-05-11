@@ -25,7 +25,7 @@ public class ControllerTests
         // Arrange
         var consoleProxy = new TestProxy();
         var setupCalled = false;
-        var controller = new Controller(new MyClass(), consoleProxy, setup => setupCalled = true);
+        var controller = new Controller(new MyClass(), consoleProxy, _ => setupCalled = true);
         controller.Run("Render", "true", "Some string", "12", "-Uppercase");
 
         // Act

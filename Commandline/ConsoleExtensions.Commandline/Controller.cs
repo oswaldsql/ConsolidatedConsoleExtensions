@@ -132,7 +132,7 @@ public class Controller
 
             var tokenSource = new CancellationTokenSource();
             this.Proxy.TreatControlCAsInput = false;
-            this.Proxy.CancelKeyPress += (sender, eventArgs) =>
+            this.Proxy.CancelKeyPress += (_, eventArgs) =>
             {
                 tokenSource.Cancel();
                 eventArgs.Cancel = true;

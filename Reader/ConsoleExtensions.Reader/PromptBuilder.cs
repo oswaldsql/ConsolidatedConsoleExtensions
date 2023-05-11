@@ -2,7 +2,7 @@
 
 public class PromptBuilder
 {
-    private static readonly Lazy<PromptBuilder> instance = new();
+    private static readonly Lazy<PromptBuilder> LazyInstance = new();
     private readonly Dictionary<Type, Func<string, object>> converters = new();
 
     public PromptBuilder()
@@ -12,7 +12,7 @@ public class PromptBuilder
 
     public static PromptBuilder Instance()
     {
-        return instance.Value;
+        return LazyInstance.Value;
     }
 
     public Prompter<T> ForType<T>()
@@ -63,6 +63,11 @@ public class PromptBuilder
 
     public PromptBuilder AddConverter<T>(Func<string, T> converter)
     {
+        if (converter == null)
+        {
+            throw new ArgumentNullException(nameof(converter));
+        }
+
         this.converters[typeof(T)] = s => converter(s);
         return this;
     }

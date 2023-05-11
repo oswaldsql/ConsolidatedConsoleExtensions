@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using ConsoleExtensions.Proxy;
-using Demo_Net6;
+using Demo;
 
 var console = ConsoleProxy.Instance();
 console.WriteLine("Hello, World!");
@@ -21,7 +21,7 @@ console.ReadLine(out _);
 
 void Header(IConsoleProxy proxy)
 {
-    proxy.HR().WriteLine(" Fantastic 'ask your name' app").HR();
+    proxy.Hr().WriteLine(" Fantastic 'ask your name' app").Hr();
 }
 
 static void Styling(IConsoleProxy console)

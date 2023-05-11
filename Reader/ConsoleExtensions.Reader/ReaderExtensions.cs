@@ -1,7 +1,7 @@
 namespace ConsoleExtensions.Reader;
 
 using System.Reflection;
-using ConsoleExtensions.Proxy;
+using Proxy;
 
 public static class ReaderExtensions
 {
@@ -12,22 +12,23 @@ public static class ReaderExtensions
         prompter.Default = defaultValue;
         return prompter.Read(proxy);
     }
-    
+
     public static T Read<T>(this IConsoleProxy proxy, Action<Prompter<T>> config)
     {
         var prompter = PromptBuilder.Instance().ForType<T>();
         config(prompter);
         return prompter.Read(proxy);
     }
-    
-    public static object Read(this IConsoleProxy proxy, Type type, string message = "", Func<object>? defaultValue = default)
+
+    public static object Read(this IConsoleProxy proxy, Type type, string message = "",
+        Func<object>? defaultValue = default)
     {
         var prompter = PromptBuilder.Instance().ForType(type);
         prompter.Message = message;
         prompter.Default = defaultValue;
         return prompter.Read(proxy);
     }
-    
+
     public static object Read(this IConsoleProxy proxy, ParameterInfo parameter)
     {
         var prompter = PromptBuilder.Instance().ForType(parameter.ParameterType);
@@ -36,6 +37,7 @@ public static class ReaderExtensions
         {
             prompter.Default = () => parameter.DefaultValue;
         }
+
         return prompter.Read(proxy);
     }
 }

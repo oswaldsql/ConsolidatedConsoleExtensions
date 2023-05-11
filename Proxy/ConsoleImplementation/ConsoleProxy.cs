@@ -1,4 +1,5 @@
-﻿namespace ConsoleExtensions.Proxy;
+﻿#nullable enable
+namespace ConsoleExtensions.Proxy;
 
 using System;
 using System.Text;
@@ -127,9 +128,7 @@ public class ConsoleProxy : IConsoleProxy
 			return this;
 		}
 
-		result = null;
-		
-		result = Console.ReadLine();
+		result = Console.ReadLine() ?? "";
 		return this;
 	}
 

@@ -5,15 +5,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Threading;
-
 namespace ConsoleExtensions.Commandline.Tests;
 
 using System.ComponentModel;
 using System.Linq;
-
 using Help;
-
 using Xunit;
 
 /// <summary>
@@ -84,7 +80,7 @@ public class AddHelpExtensionTests
         Assert.Equal(2, usage.Arguments.Length);
 
         var first = usage.Arguments.First();
-        var firstExpected = new ArgumentDetails { Name = "argument", Type = "String" };
+        var firstExpected = new ArgumentDetails {Name = "argument", Type = "String"};
         Assert.Equal(firstExpected, first, new DetailsComparer());
 
         var second = usage.Arguments[1];
@@ -95,7 +91,7 @@ public class AddHelpExtensionTests
             DisplayName = null,
             Description = "Some description",
             Optional = true,
-            DefaultValue = "default"
+            DefaultValue = "default",
         };
 
         Assert.Equal(secondExpected, second, new DetailsComparer());
@@ -237,8 +233,7 @@ public class AddHelpExtensionTests
         /// </returns>
         public string Command(
             string argument,
-            [Description("Some description")]
-            string optional = "default")
+            [Description("Some description")] string optional = "default")
         {
             return argument;
         }

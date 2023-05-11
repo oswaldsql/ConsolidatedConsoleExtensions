@@ -13,8 +13,8 @@ public class IfRendererTests
 {
   [Theory]
   [InlineData(null, false)]
-  [InlineData(0, false)]
-  [InlineData(1, true)]
+  [InlineData(0d, false)]
+  [InlineData(1d, true)]
   public void GivenANullableType_WhenTestingForTruthy_ThenReturnExpectedResult(double? value, bool expected)
   {
     // Arrange

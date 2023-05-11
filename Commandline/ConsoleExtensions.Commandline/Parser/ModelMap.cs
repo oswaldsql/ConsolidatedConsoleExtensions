@@ -80,8 +80,8 @@ public class ModelMap
 
         if (commandName.EndsWith("Async"))
         {
-            var type = command.Method.ReturnParameter.ParameterType;
-            if (type == typeof(Task) || type.IsSubclassOf(typeof(Task)))
+            var type = command.Method.ReturnParameter?.ParameterType;
+            if (type != null && (type == typeof(Task) || type.IsSubclassOf(typeof(Task))))
             {
                 commandName = commandName.Substring(0, commandName.Length - 5);
                 command = new ModelCommand(commandName, command.Method, command.Source)
@@ -266,7 +266,8 @@ public class ModelMap
                 }
                 else
                 {
-                    result = task.GetType().GetProperty("Result").GetValue(task);
+                    var propertyInfo = task.GetType().GetProperty("Result");
+                    result = propertyInfo?.GetValue(task);
                 }
             }
         }
