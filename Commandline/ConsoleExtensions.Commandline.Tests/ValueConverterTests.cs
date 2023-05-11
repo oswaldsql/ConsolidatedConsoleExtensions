@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ValueConverterTests.cs" company="Lasse Sj?rup">
+// <copyright file="ValueConverterTests.cs" company="Lasse Sjørup">
 //   Copyright (c) 2023 Lasse Sjørup
 //   Licensed under the MIT license. See LICENSE file in the solution root for full license information.
 // </copyright>
@@ -8,9 +8,7 @@
 namespace ConsoleExtensions.Commandline.Tests;
 
 using System;
-
 using Parser;
-
 using Xunit;
 
 /// <summary>

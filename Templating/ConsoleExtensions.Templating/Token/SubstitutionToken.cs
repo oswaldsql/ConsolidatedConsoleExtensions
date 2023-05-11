@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SubstitutionToken.cs" company="Lasse Sj�rup">
+// <copyright file="SubstitutionToken.cs" company="Lasse Sjørup">
 //   Copyright (c) 2023 Lasse Sjørup
 //   Licensed under the MIT license. See LICENSE file in the solution root for full license information.
 // </copyright>
