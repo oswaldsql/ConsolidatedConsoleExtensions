@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <AssemblyVersion>1.2.43.321</AssemblyVersion>
-    <Copyright>test copyright</Copyright>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<AssemblyVersion>1.2.43.321</AssemblyVersion>
+		<Copyright>test copyright</Copyright>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Proxy\ConsoleImplementation\ConsoleExtensions.Proxy.ConsoleImplementation.csproj" />
-    <ProjectReference Include="..\ConsoleExtensions.Templating\ConsoleExtensions.Templating.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Proxy\ConsoleImplementation\ConsoleExtensions.Proxy.ConsoleImplementation.csproj" />
+		<ProjectReference Include="..\ConsoleExtensions.Templating\ConsoleExtensions.Templating.csproj" />
+	</ItemGroup>
 
 </Project>

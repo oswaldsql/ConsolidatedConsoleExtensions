@@ -1,6 +1,16 @@
 ﻿<SolutionConfiguration>
   <Settings>
     <AllowParallelTestExecution>True</AllowParallelTestExecution>
+    <MetricsExclusionList>
+      <Value>Commandline\Demo\Demo.csproj</Value>
+      <Value>Proxy\Demo\Demo.csproj</Value>
+      <Value>Reader\Demo\Demo.csproj</Value>
+      <Value>Templating\Demo\Demo.csproj</Value>
+      <Value>Templating\ConsoleExtensions.Templating.Tests\ConsoleExtensions.Templating.Tests.csproj</Value>
+      <Value>Reader\ConsoleExtensions.Reader.Tests\ConsoleExtensions.Reader.Tests.csproj</Value>
+      <Value>Proxy\Tests\ConsoleExtensions.Proxy.Tests.csproj</Value>
+      <Value>Commandline\ConsoleExtensions.Commandline.Tests\ConsoleExtensions.Commandline.Tests.csproj</Value>
+    </MetricsExclusionList>
     <SolutionConfigured>True</SolutionConfigured>
   </Settings>
 </SolutionConfiguration>

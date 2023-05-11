@@ -36,7 +36,7 @@ public class PromptBuilder
             return s => Enum.Parse(type, s, true);
         }
 
-        if (type.IsAssignableTo(typeof(IConvertible)))
+        if(typeof(IConvertible).IsAssignableFrom(type))
         {
             return s => Convert.ChangeType(s, type);
         }
