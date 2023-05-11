@@ -1,6 +1,5 @@
 namespace ConsoleExtensions.Templating.Tests;
 
-using System;
 using System.Linq;
 
 using Token;

@@ -9,7 +9,6 @@ namespace Demo;
 
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 
 using ConsoleExtensions.Proxy;
@@ -23,8 +22,7 @@ internal class Program
     /// <summary>
     ///     Defines the entry point of the application.
     /// </summary>
-    /// <param name="args">The arguments.</param>
-    private static void Main(string[] args)
+    private static void Main()
     {
         var proxy = ConsoleProxy.Instance();
 
@@ -36,7 +34,7 @@ internal class Program
             "[foreach:attribs] {} [/] [hr/][with:version]Name : {Name} [br/] Version :{Version}[/] [br/]");
 
         var assembly = typeof(Program).Assembly;
-        var types = assembly.GetTypes().Select(t => t.GetTypeInfo()).ToArray();
+
         var version = assembly.GetName();
         proxy.WriteTemplate(assemblyInfoTemplate, new { version, attribs = assembly.GetCustomAttributes(true) });
 
@@ -57,7 +55,5 @@ internal class Program
         proxy.WriteTemplate("[hr/]The 5 build in styles are:[br/]").WriteTemplate("- [s:Default]Default[/][br/]")
             .WriteTemplate("- [s:Ok]OK[/][br/]").WriteTemplate("- [s:Info]Info[/][br/]")
             .WriteTemplate("- [s:Warning]Warning[/][br/]").WriteTemplate("- [s:Error]Error[/][br/]");
-
-        proxy.ReadLine(out var result);
     }
 }
