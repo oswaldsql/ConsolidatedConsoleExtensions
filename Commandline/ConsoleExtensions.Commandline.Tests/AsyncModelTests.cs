@@ -1,9 +1,9 @@
-// // --------------------------------------------------------------------------------------------------------------------
-// // <copyright file="AsyncModelTests.cs" company="Lasse Sj�rup">
-// //   Copyright (c)  Lasse Sj�rup
-// //   Licensed under the MIT license. See LICENSE file in the solution root for full license information.
-// // </copyright>
-// // --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AsyncModelTests.cs" company="Lasse Sj�rup">
+//   Copyright (c) 2023  Lasse Sjørup
+//   Licensed under the MIT license. See LICENSE file in the solution root for full license information.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoleExtensions.Commandline.Tests;
 

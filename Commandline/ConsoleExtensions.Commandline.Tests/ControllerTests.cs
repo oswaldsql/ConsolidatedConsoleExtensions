@@ -1,9 +1,9 @@
-// // --------------------------------------------------------------------------------------------------------------------
-// // <copyright file="ControllerTests.cs" company="Lasse Sjørup">
-// //   Copyright (c)  Lasse Sjørup
-// //   Licensed under the MIT license. See LICENSE file in the solution root for full license information.
-// // </copyright>
-// // --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ControllerTests.cs" company="Lasse Sjørup">
+//   Copyright (c) 2023 Lasse Sjørup
+//   Licensed under the MIT license. See LICENSE file in the solution root for full license information.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoleExtensions.Commandline.Tests;
 
