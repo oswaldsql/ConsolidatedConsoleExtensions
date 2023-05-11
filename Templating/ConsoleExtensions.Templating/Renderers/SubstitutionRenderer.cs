@@ -38,6 +38,14 @@ internal class SubstitutionRenderer : Renderer
     public SubstitutionRenderer(string value, Template template)
     {
         this.Config = value;
+        
+        var strings = value.Split(FormatSeparator, 2);
+        this.PropertyName = strings[0];
+        if (strings.Length == 2)
+        {
+            this.format = strings[1];
+        }
+
         this.Template = template;
     }
 
@@ -45,24 +53,6 @@ internal class SubstitutionRenderer : Renderer
     ///     Gets or sets the name of the property.
     /// </summary>
     public string PropertyName { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the configuration.
-    /// </summary>
-    internal override string Config
-    {
-        get => base.Config;
-        set
-        {
-            base.Config = value;
-            var strings = value.Split(FormatSeparator, 2);
-            this.PropertyName = strings[0];
-            if (strings.Length == 2)
-            {
-                this.format = strings[1];
-            }
-        }
-    }
 
     /// <summary>
     ///     Instructs the renderer to render to the supplied proxy.

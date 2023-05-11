@@ -25,7 +25,7 @@ public abstract class Renderer
     /// <summary>
     ///     Gets or sets the configuration of the renderer.
     /// </summary>
-    internal virtual string Config { get; set; }
+    internal string Config { get; set; }
 
     /// <summary>
     ///     Gets or sets the sub renderes.

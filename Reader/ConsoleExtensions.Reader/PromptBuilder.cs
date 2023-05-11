@@ -63,12 +63,7 @@ public class PromptBuilder
 
     public PromptBuilder AddConverter<T>(Func<string, T> converter)
     {
-        if (converter == null)
-        {
-            throw new ArgumentNullException(nameof(converter));
-        }
-
-        this.converters[typeof(T)] = s => converter(s);
+        this.converters[typeof(T)] = s => converter(s) ?? throw new InvalidOperationException();
         return this;
     }
 }
