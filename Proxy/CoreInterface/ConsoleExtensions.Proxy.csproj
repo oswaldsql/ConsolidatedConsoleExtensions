@@ -6,7 +6,7 @@
 		<Authors>Lasse Sjørup</Authors>
 		<Description>Wraps System.Console in a interface for testability, injectability and general niceness.</Description>
 		<Summery>Wraps System.Console in a interface for testability, injectability and general niceness.</Summery>
-		<Copyright>Lasse Sjørup 2022</Copyright>
+		<Copyright>Lasse Sjørup 2023</Copyright>
 		<PackageTags>Console, Dependency injection</PackageTags>
 		<AssemblyVersion>1.3.0.0</AssemblyVersion>
 		<FileVersion>1.3.0.0</FileVersion>
@@ -19,10 +19,7 @@
 		<LangVersion>default</LangVersion>
 		<PackageVersion>1.3.0</PackageVersion>
 		<PackageIcon>Icon.png</PackageIcon>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DocumentationFile>C:\Code\ConsoleExtensions\Proxy\CoreInterface\ConsoleExtensions.Proxy.xml</DocumentationFile>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

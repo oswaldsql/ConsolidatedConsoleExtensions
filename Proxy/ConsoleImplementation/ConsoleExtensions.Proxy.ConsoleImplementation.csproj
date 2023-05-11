@@ -22,10 +22,8 @@
 		<LangVersion>default</LangVersion>
 		<PackageVersion>1.3.0</PackageVersion>
 		<PackageIcon>Icon.png</PackageIcon>
-	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DocumentationFile>C:\Code\ConsoleExtensions\Proxy\ConsoleImplementation\ConsoleExtensions.Proxy.ConsoleImplementation.xml</DocumentationFile>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

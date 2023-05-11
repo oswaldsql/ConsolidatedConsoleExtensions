@@ -2,11 +2,30 @@ namespace ConsoleExtensions.Proxy.TestHelpers;
 
 using System;
 
+/// <summary>
+///     Control keys.
+/// </summary>
 [Flags]
 public enum ControlKeys
 {
-  None = 0,
-  Shift = 1,
-  Alt = 2,
-  Control = 4
+    /// <summary>
+    ///     No control keys.
+    /// </summary>
+    None = 0,
+
+
+    /// <summary>
+    ///     The Shift key.
+    /// </summary>
+    Shift = 1,
+
+    /// <summary>
+    ///     The alt key.
+    /// </summary>
+    Alt = 2,
+
+    /// <summary>
+    ///     The control key.
+    /// </summary>
+    Control = 4,
 }
