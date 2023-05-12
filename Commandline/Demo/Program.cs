@@ -3,7 +3,7 @@ using ConsoleExtensions.Commandline;
 using ConsoleExtensions.Proxy;
 using Demo;
 
-Controller.Run(new Toolbox(), args);
+return await Controller.RunAsync<Toolbox>();
 
 namespace Demo
 {

@@ -44,7 +44,9 @@ public static class HelpExtensions
             "[if:ModelName][c:white]{ModelName}[/][/][if:ModelVersion] ({ModelVersion})[/][br/]"
             + "[if:Description]{Description}[br/][/]" + "[if:Usage]{Usage}[br/][/][br/]"
             + "[if:Options][c:white]Options[/][hr/][foreach:Options]{}[br/][/][hr/]"
-            + "[/][if:Commands][c:white]Commands[/][hr/][foreach:Commands]{}[br/][/][hr/][/]");
+            + "[/][if:Commands][c:white]Commands[/][hr/][foreach:Commands]{}[br/][/][hr/][/]"
+            + "Exit codes[br/]"
+            + "[foreach:ExitCodes2][c:white]{Key}[/][br/][foreach]   [c:white]{Name}[/] ({Description})[br/][/][/][hr/]");
 
         var name = Assembly.GetEntryAssembly()?.GetName().Name;
 
@@ -52,9 +54,8 @@ public static class HelpExtensions
         var method = helpGenerator.GetType().GetMethod("Help");
         var helpAction = new ModelCommand("Help", method, helpGenerator)
         {
-            Description =
-                $"Show command line help. '{name} Help [Topic]' for more information on a command or option.",
-            DisplayName = "Help"
+            Description = $"Show command line help. '{name} Help [Topic]' for more information on a command or option.",
+            DisplayName = "Help",
         };
 
         controller.ModelMap.AddCommand(helpAction);

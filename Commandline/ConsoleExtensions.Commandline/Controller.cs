@@ -13,11 +13,14 @@ using System.Threading;
 namespace ConsoleExtensions.Commandline;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-
+using System.Reflection;
+using System.Threading.Tasks;
 using Arguments;
 using Exceptions;
 using Help;
+using JetBrains.Annotations;
 using Parser;
 using Proxy;
 using Templating;
@@ -51,17 +54,16 @@ public class Controller
     /// <param name="model">The model.</param>
     /// <param name="proxy">The proxy.</param>
     /// <param name="setup">The setup. Optional overwrite of the extensions added to the console. Is not specified the Default setup is applied.</param>
-    internal Controller(object model, IConsoleProxy proxy, Action<Controller> setup = null)
+    internal Controller([NotNull] object model, IConsoleProxy proxy, Action<Controller> setup = null)
     {
-        this.Model = model;
-        this.Proxy = proxy;
+        this.Model = model ?? throw new ArgumentException("Model must be a initialized class", (nameof(model)));
+        this.Proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
         this.TemplateParser = new TemplateParser();
 
         this.ModelMap = ModelParser.Parse(this.Model);
 
-        setup = setup ?? this.DefaultSetup;
-
-        setup(this);
+        this.DefaultSetup(this);
+        setup?.Invoke(this);
 
         this.resultTemplate = this.TemplateParser.Parse("{}");
     }
@@ -80,7 +82,7 @@ public class Controller
     /// <summary>
     ///     Gets the proxy used to serve as a output of the console.
     /// </summary>
-    public IConsoleProxy Proxy { get; }
+    public IConsoleProxy Proxy { get; internal set; }
 
     /// <summary>
     ///     Gets the template parser used to present results of command and
@@ -89,38 +91,57 @@ public class Controller
     public TemplateParser TemplateParser { get; }
 
     /// <summary>
+    /// Runs the model with specified setup.
+    /// </summary>
+    /// <typeparam name="T">Model type to construct.</typeparam>
+    /// <param name="setup">The setup.</param>
+    /// <returns>The exit code.</returns>
+    public static int Run<T>(Action<Controller> setup = null) where T : new()
+    {
+        return Run(new T(), null, setup);
+    }
+
+    /// <summary>
+    /// Runs the model with specified setup in a async task.
+    /// </summary>
+    public static Task<int> RunAsync<T>(Action<Controller> setup = null) where T : new()
+    {
+        return Task.FromResult(Run(new T(), null, setup));
+    }
+
+    /// <summary>
     ///     Instantiates a new controller with the model and standard setup and runs the arguments      against the model.
     /// </summary>
     /// <param name="model">The model.</param>
     /// <param name="args">The arguments.</param>
     /// <param name="setup">The setup.</param>
-    public static void Run(object model, string[] args = null, Action<Controller> setup = null)
+    public static int Run(object model, string[] args = null, Action<Controller> setup = null)
     {
-        var controller = new Controller(model, setup);
-
-        args = args ?? Environment.GetCommandLineArgs().Skip(1).ToArray();
-
-        controller.Run(args);
+        return new Controller(model, setup).Run(args);
     }
+
+    /// <summary>
+    /// Gets or sets the command line argument provider.
+    /// </summary>
+    internal Func<string[]> ArgumentsProvider { get; set; } = () => Environment.GetCommandLineArgs().Skip(1).ToArray();
 
     /// <summary>
     ///     Runs the specified arguments against the controllers model.
     /// </summary>
     /// <param name="args">The arguments.</param>
-    public void Run(params string[] args)
+    public int Run(params string[] args)
     {
+        if (args == null || args.Length == 0)
+        {
+            args = this.ArgumentsProvider();
+        }
         if (args.Length == 0)
         {
-            args = Environment.GetCommandLineArgs().Skip(1).ToArray();
+            args = new[] { "Help" };
         }
 
         try
         {
-            if (args.Length == 0)
-            {
-                args = new[] { "Help" };
-            }
-
             var arguments = ArgumentParser.Parse(args);
 
             this.ValidateArgumentsAgainstModel(arguments);
@@ -141,13 +162,20 @@ public class Controller
             var result = this.ModelMap.Invoke(arguments.Command, tokenSource.Token, arguments.Arguments);
 
             this.Proxy.WriteTemplate(this.resultTemplate, result);
+            return this.GetExitCode(result).Code;
         }
         catch (Exception e)
         {
             this.Proxy.WriteTemplate(this.resultTemplate, e);
+
+            if (e is TargetInvocationException)
+            {
+                e = e.InnerException;
+            }
+
+            return this.GetExitCode(e).Code;
         }
     }
-
 
     /// <summary>
     ///     Applies the default setup to the controller.
@@ -155,7 +183,7 @@ public class Controller
     /// <param name="controller">The controller.</param>
     private void DefaultSetup(Controller controller)
     {
-        controller.AddHelp().AddExceptionHandling();
+        controller.AddHelp().AddExceptionHandling().AddDefaultExitCodes();
     }
 
     /// <summary>
@@ -183,4 +211,19 @@ public class Controller
             throw new UnknownCommandException(arguments.Command, this.ModelMap.Commands.Values);
         }
     }
+
+    /// <summary>
+    ///     Gets the exit code.
+    /// </summary>
+    /// <param name="result">The result.</param>
+    /// <returns></returns>
+    private ExitCode GetExitCode(object result)
+    {
+        return this.ExitCodes.OrderBy(o => o.Order).FirstOrDefault(o => o.Match(result));
+    }
+
+    /// <summary>
+    /// Gets the exit codes.
+    /// </summary>
+    public List<ExitCode> ExitCodes { get; } = new ();
 }

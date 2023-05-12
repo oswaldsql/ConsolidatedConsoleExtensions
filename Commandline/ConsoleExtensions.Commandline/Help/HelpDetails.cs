@@ -7,7 +7,7 @@
 namespace ConsoleExtensions.Commandline.Help;
 
 using System;
-
+using System.Linq;
 using Parser;
 
 /// <summary>
@@ -44,4 +44,7 @@ public class HelpDetails
     /// Gets or sets the usage.
     /// </summary>
     public UsageDetails Usage { get; set; }
+
+    public ExitCode[] ExitCodes { get; set; }
+    public ILookup<int, ExitCode> ExitCodes2 { get; set; }
 }
