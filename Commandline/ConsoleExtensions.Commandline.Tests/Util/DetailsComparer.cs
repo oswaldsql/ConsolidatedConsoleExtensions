@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoleExtensions.Commandline.Tests;
+namespace ConsoleExtensions.Commandline.Tests.Util;
 
 using System;
 using System.Collections.Generic;
@@ -36,17 +36,17 @@ public class DetailsComparer : IEqualityComparer<ArgumentDetails>
 
         return x.Name == y.Name && x.DisplayName == y.DisplayName && x.Description == y.Description
                && x.Optional == y.Optional && x.Type == y.Type
-               && ((x.DefaultValue == null || y.DefaultValue == null) || x.DefaultValue.Equals(y.DefaultValue));
+               && (x.DefaultValue == null || y.DefaultValue == null || x.DefaultValue.Equals(y.DefaultValue));
     }
 
     /// <summary>
     ///     Returns a hash code for this instance.
     /// </summary>
     /// <param name="obj">
-    ///     The <see cref="System.Object" /> for which a hash code is to be
+    ///     The <see cref="object" /> for which a hash code is to be
     ///     returned.
     /// </param>
-    /// <exception cref="System.NotImplementedException">
+    /// <exception cref="NotImplementedException">
     ///     Always thrown.
     /// </exception>
     /// <returns>

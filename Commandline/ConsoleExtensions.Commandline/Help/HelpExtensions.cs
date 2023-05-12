@@ -42,11 +42,11 @@ public static class HelpExtensions
 
         controller.TemplateParser.AddTypeTemplate<HelpDetails>(
             "[if:ModelName][c:white]{ModelName}[/][/][if:ModelVersion] ({ModelVersion})[/][br/]"
-            + "[if:Description]{Description}[br/][/]" + "[if:Usage]{Usage}[br/][/][br/]"
-            + "[if:Options][c:white]Options[/][hr/][foreach:Options]{}[br/][/][hr/]"
-            + "[/][if:Commands][c:white]Commands[/][hr/][foreach:Commands]{}[br/][/][hr/][/]"
-            + "Exit codes[br/]"
-            + "[foreach:ExitCodes2][c:white]{Key}[/][br/][foreach]   [c:white]{Name}[/] ({Description})[br/][/][/][hr/]");
+            + "[if:Description]{Description}[br/][/]" 
+            + "[if:Usage]{Usage}[br/][/][br/]"
+            + "[if:Options][c:white]Options[/][hr/][foreach:Options]{}[br/][/][hr/][/]"
+            + "[if:Commands][c:white]Commands[/][hr/][foreach:Commands]{}[br/][/][hr/][/]"
+            + "Exit codes[br/][foreach:ExitCodes][c:white]{Key}[/][br/][foreach]   [c:white]{Name}[/] ({Description})[br/][/][/][hr/]");
 
         var name = Assembly.GetEntryAssembly()?.GetName().Name;
 

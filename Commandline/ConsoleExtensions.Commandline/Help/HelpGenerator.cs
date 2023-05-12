@@ -51,9 +51,7 @@ public class HelpGenerator
         helpDetails.Description = GetDescription(type);
         helpDetails.ModelVersion = type.Assembly.GetName().Version;
 
-        helpDetails.ExitCodes = this.Controller.ExitCodes.OrderBy(t => t.Code).ToArray();
-
-        helpDetails.ExitCodes2 = this.Controller.ExitCodes.OrderBy(t => t.Code).ToLookup(t => t.Code);
+        helpDetails.ExitCodes = this.Controller.ExitCodes.OrderBy(t => t.Code).ToLookup(t => t.Code);
 
         var map = this.Controller.ModelMap;
 

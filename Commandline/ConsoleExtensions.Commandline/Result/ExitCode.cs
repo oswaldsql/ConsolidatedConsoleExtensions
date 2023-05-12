@@ -1,4 +1,4 @@
-﻿namespace ConsoleExtensions.Commandline;
+﻿namespace ConsoleExtensions.Commandline.Result;
 
 using System;
 
@@ -16,12 +16,12 @@ public enum ExitCodeOrder
     /// The first exit codes.
     /// </summary>
     First = 0,
-    
+
     /// <summary>
     /// The default exit codes.
     /// </summary>
     Default = 1,
-    
+
     /// <summary>
     /// The last exit codes. Should only be used for System.Exception.
     /// </summary>

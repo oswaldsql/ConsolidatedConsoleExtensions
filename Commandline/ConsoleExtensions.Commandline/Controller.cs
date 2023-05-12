@@ -6,7 +6,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Runtime.CompilerServices;
-using System.Threading;
 
 [assembly: InternalsVisibleTo("ConsoleExtensions.Commandline.Tests")]
 
@@ -16,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Arguments;
 using Exceptions;
@@ -23,6 +23,7 @@ using Help;
 using JetBrains.Annotations;
 using Parser;
 using Proxy;
+using Result;
 using Templating;
 
 /// <summary>
@@ -53,10 +54,13 @@ public class Controller
     /// </summary>
     /// <param name="model">The model.</param>
     /// <param name="proxy">The proxy.</param>
-    /// <param name="setup">The setup. Optional overwrite of the extensions added to the console. Is not specified the Default setup is applied.</param>
+    /// <param name="setup">
+    ///     The setup. Optional overwrite of the extensions added to the console. Is not specified the Default
+    ///     setup is applied.
+    /// </param>
     internal Controller([NotNull] object model, IConsoleProxy proxy, Action<Controller> setup = null)
     {
-        this.Model = model ?? throw new ArgumentException("Model must be a initialized class", (nameof(model)));
+        this.Model = model ?? throw new ArgumentException("Model must be a initialized class", nameof(model));
         this.Proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
         this.TemplateParser = new TemplateParser();
 
@@ -91,7 +95,17 @@ public class Controller
     public TemplateParser TemplateParser { get; }
 
     /// <summary>
-    /// Runs the model with specified setup.
+    ///     Gets or sets the command line argument provider.
+    /// </summary>
+    internal Func<string[]> ArgumentsProvider { get; set; } = () => Environment.GetCommandLineArgs().Skip(1).ToArray();
+
+    /// <summary>
+    ///     Gets the exit codes.
+    /// </summary>
+    public List<ExitCode> ExitCodes { get; } = new();
+
+    /// <summary>
+    ///     Runs the model with specified setup.
     /// </summary>
     /// <typeparam name="T">Model type to construct.</typeparam>
     /// <param name="setup">The setup.</param>
@@ -102,7 +116,7 @@ public class Controller
     }
 
     /// <summary>
-    /// Runs the model with specified setup in a async task.
+    ///     Runs the model with specified setup in a async task.
     /// </summary>
     public static Task<int> RunAsync<T>(Action<Controller> setup = null) where T : new()
     {
@@ -121,11 +135,6 @@ public class Controller
     }
 
     /// <summary>
-    /// Gets or sets the command line argument provider.
-    /// </summary>
-    internal Func<string[]> ArgumentsProvider { get; set; } = () => Environment.GetCommandLineArgs().Skip(1).ToArray();
-
-    /// <summary>
     ///     Runs the specified arguments against the controllers model.
     /// </summary>
     /// <param name="args">The arguments.</param>
@@ -135,9 +144,10 @@ public class Controller
         {
             args = this.ArgumentsProvider();
         }
+
         if (args.Length == 0)
         {
-            args = new[] { "Help" };
+            args = new[] {"Help"};
         }
 
         try
@@ -221,9 +231,4 @@ public class Controller
     {
         return this.ExitCodes.OrderBy(o => o.Order).FirstOrDefault(o => o.Match(result));
     }
-
-    /// <summary>
-    /// Gets the exit codes.
-    /// </summary>
-    public List<ExitCode> ExitCodes { get; } = new ();
 }

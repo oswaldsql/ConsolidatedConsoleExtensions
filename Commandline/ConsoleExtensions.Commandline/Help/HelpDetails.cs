@@ -4,47 +4,51 @@
 //   Licensed under the MIT license. See LICENSE file in the solution root for full license information.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace ConsoleExtensions.Commandline.Help;
 
 using System;
 using System.Linq;
 using Parser;
+using Result;
 
 /// <summary>
-/// Class HelpDetails.
+///     Class HelpDetails.
 /// </summary>
 public class HelpDetails
 {
     /// <summary>
-    /// Gets or sets the commands available.
+    ///     Gets or sets the commands available.
     /// </summary>
     public ModelCommand[] Commands { get; set; }
 
     /// <summary>
-    /// Gets or sets the description.
+    ///     Gets or sets the description.
     /// </summary>
     public string Description { get; set; }
 
     /// <summary>
-    /// Gets or sets the name of the model.
+    ///     Gets or sets the name of the model.
     /// </summary>
     public string ModelName { get; set; }
 
     /// <summary>
-    /// Gets or sets the model version.
+    ///     Gets or sets the model version.
     /// </summary>
     public Version ModelVersion { get; set; }
 
     /// <summary>
-    /// Gets or sets the options.
+    ///     Gets or sets the options.
     /// </summary>
     public ModelOption[] Options { get; set; }
 
     /// <summary>
-    /// Gets or sets the usage.
+    ///     Gets or sets the usage.
     /// </summary>
     public UsageDetails Usage { get; set; }
 
-    public ExitCode[] ExitCodes { get; set; }
-    public ILookup<int, ExitCode> ExitCodes2 { get; set; }
+    /// <summary>
+    /// Gets or sets the exit codes.
+    /// </summary>
+    public ILookup<int, ExitCode> ExitCodes { get; set; }
 }

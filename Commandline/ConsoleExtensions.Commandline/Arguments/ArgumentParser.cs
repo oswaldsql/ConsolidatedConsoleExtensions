@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 ///     Class ArgumentParser. Extracts information about the arguments and maps them as a command, arguments and options.
 /// </summary>
-public class ArgumentParser
+public static class ArgumentParser
 {
     /// <summary>
     ///     RegEx to determine if a string is a property name,
