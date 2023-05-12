@@ -5,15 +5,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Threading;
-
 namespace ConsoleExtensions.Commandline.Help;
 
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-
+using System.Threading;
 using JetBrains.Annotations;
 
 /// <summary>
@@ -65,14 +63,13 @@ public class HelpGenerator
                     DisplayName = command.DisplayName,
                     Description = command.Description,
                     ReturnType = command.Method.ReturnType.Name,
-                    Arguments = command.Method.GetParameters().Where(t => !this.IsHidden(t)).Select(this.Map).ToArray()
+                    Arguments = command.Method.GetParameters().Where(t => !this.IsHidden(t)).Select(this.Map).ToArray(),
                 };
 
                 helpDetails.Usage = details;
                 helpDetails.Options = map.Options.Values.ToArray();
             }
-            else
-            if (map.Options.TryGetValue(topic, out var option))
+            else if (map.Options.TryGetValue(topic, out var option))
             {
                 var details = new UsageDetails
                 {
@@ -148,7 +145,7 @@ public class HelpGenerator
             Description = arg.GetCustomAttribute<DescriptionAttribute>()?.Description,
             Optional = arg.HasDefaultValue,
             DefaultValue = arg.HasDefaultValue ? arg.DefaultValue : null,
-            Type = arg.ParameterType.Name
+            Type = arg.ParameterType.Name,
         };
 
         return result;

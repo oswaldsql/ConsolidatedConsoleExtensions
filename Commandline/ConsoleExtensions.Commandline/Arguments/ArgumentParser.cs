@@ -7,8 +7,8 @@
 
 namespace ConsoleExtensions.Commandline.Arguments;
 
+using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 /// <summary>
 ///     Class ArgumentParser. Extracts information about the arguments and maps them as a command, arguments and options.
@@ -16,82 +16,60 @@ using System.Text.RegularExpressions;
 public static class ArgumentParser
 {
     /// <summary>
-    ///     RegEx to determine if a string is a property name,
-    /// </summary>
-    private static readonly Regex IsPropertyName = new Regex("^-\\D");
-
-    /// <summary>
     ///     Parses the specified arguments.
     /// </summary>
     /// <param name="args">The arguments.</param>
     /// <returns>The resulting ParsedArguments object.</returns>
     public static ParsedArguments Parse(params string[] args)
     {
-        var result = new ParsedArguments();
+        var command = "";
+        var arguments = new List<string>();
+        var properties = new Dictionary<string, List<string>>();
 
         if (args.Length == 0)
         {
-            return result;
+            return new ParsedArguments("Help", Array.Empty<string>(), new Dictionary<string, List<string>>());;
         }
 
-        var index = ParseCommand(args, result);
+        var queue = new Queue<string>(args);
 
-        var curPropertyName = string.Empty;
-        while (index < args.Length)
+        if (!IsProp(queue.Peek()))
         {
-            if (IsPropertyName.IsMatch(args[index]))
-            {
-                var key = args[index].Substring(1);
-                if (!result.Properties.ContainsKey(key))
-                {
-                    result.Properties[key] = new List<string>();
-                }
+            command = queue.Dequeue();
+        }
 
-                curPropertyName = key;
+        var valueList = arguments;
+        while (queue.Count > 0)
+        {
+            var next = queue.Dequeue();
+            if (IsProp(next))
+            {
+                var key = next.Substring(1);
+                if (!properties.TryGetValue(key, out valueList))
+                {
+                    valueList = new List<string>();
+                    properties[key] = valueList;
+
+                }
             }
             else
             {
-                result.Properties[curPropertyName].Add(args[index]);
+                valueList.Add(next);
             }
-
-            index++;
         }
 
-        return result;
+        return new ParsedArguments(command, arguments.ToArray(), properties);
     }
 
     /// <summary>
-    ///     Parses the command and arguments and sets the index to the position of the first option.
+    /// Determines whether the specified argument is a property name.
     /// </summary>
-    /// <param name="args">The arguments.</param>
-    /// <param name="result">The result.</param>
-    /// <returns>Index of the first option.</returns>
-    private static int ParseCommand(string[] args, ParsedArguments result)
+    /// <param name="arg">The argument.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified argument is a property name; otherwise, <c>false</c>.
+    /// </returns>
+    private static bool IsProp(string arg)
     {
-        var index = 0;
-        if (!IsPropertyName.IsMatch(args[0]))
-        {
-            result.Command = args[0];
-
-            var argList = new List<string>();
-            index = 1;
-            while (index < args.Length)
-            {
-                if (!IsPropertyName.IsMatch(args[index]))
-                {
-                    argList.Add(args[index]);
-                }
-                else
-                {
-                    break;
-                }
-
-                index++;
-            }
-
-            result.Arguments = argList.ToArray();
-        }
-
-        return index;
+        return arg.StartsWith("-");
     }
 }

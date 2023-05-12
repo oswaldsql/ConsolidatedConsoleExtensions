@@ -145,11 +145,6 @@ public class Controller
             args = this.ArgumentsProvider();
         }
 
-        if (args.Length == 0)
-        {
-            args = new[] {"Help"};
-        }
-
         try
         {
             var arguments = ArgumentParser.Parse(args);
