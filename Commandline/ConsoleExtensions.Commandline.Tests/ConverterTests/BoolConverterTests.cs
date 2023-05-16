@@ -54,7 +54,7 @@ public class BoolConverterTests
 
         // Assert
         Assert.Equal(expected, model.BoolValue);
-        Assert.Equal(expected.ToString(), sut.GetOption("BoolValue")[0]);
+        Assert.Equal(expected.ToString(), sut.GetOption("BoolValue"));
     }
 
     /// <summary>
@@ -212,7 +212,7 @@ public class BoolConverterTests
         // Act
         model.CustomBoolValue = value;
         model.BoolValue = value;
-        var actual = sut.GetOption(field).First();
+        var actual = sut.GetOption(field);
 
         // Assert
         Assert.Equal(expected, actual);

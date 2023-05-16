@@ -12,43 +12,9 @@ using System.Reflection;
 /// <summary>
 ///     Class ModelCommand. Represents a model command.
 /// </summary>
-public class ModelCommand
-{
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ModelCommand" /> class.
-    /// </summary>
-    /// <param name="name">The name.</param>
-    /// <param name="method">The method.</param>
-    /// <param name="source">The source.</param>
-    public ModelCommand(string name, MethodInfo method, object source)
-    {
-        this.Name = name;
-        this.Method = method;
-        this.Source = source;
-    }
-
-    /// <summary>
-    ///     Gets or sets the description.
-    /// </summary>
-    public string Description { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the display name.
-    /// </summary>
-    public string DisplayName { get; set; }
-
-    /// <summary>
-    ///     Gets the method.
-    /// </summary>
-    public MethodInfo Method { get; }
-
-    /// <summary>
-    ///     Gets the name.
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
-    ///     Gets the source object the execute the method on.
-    /// </summary>
-    public object Source { get; }
-}
+/// <param name="Name">Name of the command.</param>
+/// <param name="Method">Method to be called when the command is issued.</param>
+/// <param name="Source">Object on which the method should be called.</param>
+/// <param name="DisplayName">Display name of the command.</param>
+/// <param name="Description">Optional description of the command.</param>
+public record ModelCommand(string Name, MethodInfo Method, object Source, string DisplayName, string Description);

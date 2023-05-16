@@ -7,68 +7,43 @@
 
 namespace ConsoleExtensions.Commandline.Parser;
 
+using System;
 using System.Reflection;
 
 /// <summary>
-///     Class ModelOption.
+///     Model option container.
 /// </summary>
-public class ModelOption
+/// <param name="Name">Name of option.</param>
+/// <param name="Property">Property to use when setting the option.</param>
+/// <param name="Source">Object on which the property should be set.</param>
+/// <param name="DisplayName">Display name of the option.</param>
+/// <param name="Description">Optional description of the option.</param>
+public record ModelOption(string Name, PropertyInfo Property, object Source, string DisplayName, string Description);
+
+/// <summary>
+///     Extension methods for options.
+/// </summary>
+public static class ModelOptionExtensions
 {
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ModelOption" /> class.
-    /// </summary>
-    /// <param name="name">The name.</param>
-    /// <param name="property">The property.</param>
-    /// <param name="source">The source.</param>
-    public ModelOption(string name, PropertyInfo property, object source)
-    {
-        this.Name = name;
-        this.Property = property;
-        this.Source = source;
-    }
-
-    /// <summary>
-    ///     Gets or sets the description.
-    /// </summary>
-    public string Description { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the display name.
-    /// </summary>
-    public string DisplayName { get; set; }
-
-    /// <summary>
-    ///     Gets the name.
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
-    ///     Gets the property.
-    /// </summary>
-    public PropertyInfo Property { get; }
-
-    /// <summary>
-    ///     Gets the source.
-    /// </summary>
-    public object Source { get; }
-
     /// <summary>
     ///     Returns the currents value of the option.
     /// </summary>
-    /// <returns>A string representing the value.</returns>
-    public object CurrentValue()
+    /// <param name="option">The option.</param>
+    /// <returns>
+    ///     A string representing the value.
+    /// </returns>
+    public static object CurrentValue(this ModelOption option)
     {
-        // TODO : catch all the exceptions that can occur and map them
-        return this.Property.GetMethod.Invoke(this.Source, new object[0]);
+        return option.Property.GetMethod.Invoke(option.Source, Array.Empty<object>());
     }
 
     /// <summary>
     ///     Sets the specified value.
     /// </summary>
+    /// <param name="option">The option.</param>
     /// <param name="value">The value.</param>
-    public void Set(object value)
+    public static void Set(this ModelOption option, object value)
     {
-        // TODO : catch all the exceptions that can occur and map them
-        this.Property.SetMethod.Invoke(this.Source, new[] { value });
+        option.Property.SetMethod.Invoke(option.Source, new[] {value});
     }
 }

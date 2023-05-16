@@ -52,11 +52,7 @@ public static class HelpExtensions
 
         var helpGenerator = new HelpGenerator(controller);
         var method = helpGenerator.GetType().GetMethod("Help");
-        var helpAction = new ModelCommand("Help", method, helpGenerator)
-        {
-            Description = $"Show command line help. '{name} Help [Topic]' for more information on a command or option.",
-            DisplayName = "Help",
-        };
+        var helpAction = new ModelCommand("Help", method, helpGenerator, "Help",$"Show command line help. '{name} Help [Topic]' for more information on a command or option.");
 
         controller.ModelMap.AddCommand(helpAction);
 

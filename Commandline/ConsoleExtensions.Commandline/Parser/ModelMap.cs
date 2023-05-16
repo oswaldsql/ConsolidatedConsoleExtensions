@@ -25,12 +25,12 @@ using Validators;
 /// </summary>
 public class ModelMap
 {
-    static TaskFactory taskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
+    private static readonly TaskFactory TaskFactory = new(CancellationToken.None, TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
 
     /// <summary>
     ///     The value converters used to convert from string to objects and back.
     /// </summary>
-    private readonly List<IValueConverter> valueConverters = new List<IValueConverter>();
+    private readonly List<IValueConverter> valueConverters = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModelMap" /> class.
@@ -39,17 +39,8 @@ public class ModelMap
     /// <param name="commands">The commands.</param>
     public ModelMap(IEnumerable<ModelOption> options, IEnumerable<ModelCommand> commands)
     {
-        this.Options = new Dictionary<string, ModelOption>(StringComparer.InvariantCultureIgnoreCase);
-        foreach (var option in options)
-        {
-            this.AddOption(option);
-        }
-
-        this.Commands = new Dictionary<string, ModelCommand>(StringComparer.InvariantCultureIgnoreCase);
-        foreach (var command in commands)
-        {
-            this.AddCommand(command);
-        }
+        this.Options = options.ToDictionary(t => t.Name, StringComparer.InvariantCultureIgnoreCase);
+        this.Commands = commands.ToDictionary(t => t.Name, StringComparer.InvariantCultureIgnoreCase);
 
         this.AddValueConverter(
             new EnumConverter(),
@@ -74,23 +65,9 @@ public class ModelMap
     /// </summary>
     /// <param name="command">The command.</param>
     /// <returns>The ModelMap.</returns>
-    public ModelMap AddCommand(ModelCommand command)
+    public void AddCommand(ModelCommand command)
     {
-        var commandName = command.Name;
-
-        if (commandName.EndsWith("Async"))
-        {
-            var type = command.Method.ReturnParameter?.ParameterType;
-            if (type != null && (type == typeof(Task) || type.IsSubclassOf(typeof(Task))))
-            {
-                commandName = commandName.Substring(0, commandName.Length - 5);
-                command = new ModelCommand(commandName, command.Method, command.Source)
-                    { Description = command.Description, DisplayName = command.DisplayName };
-            }
-        }
-
-        this.Commands.Add(commandName, command);
-        return this;
+        this.Commands.Add(command.Name, command);
     }
 
     /// <summary>
@@ -98,10 +75,9 @@ public class ModelMap
     /// </summary>
     /// <param name="option">The option.</param>
     /// <returns>The ModelMap.</returns>
-    public ModelMap AddOption(ModelOption option)
+    public void AddOption(ModelOption option)
     {
         this.Options.Add(option.Name, option);
-        return this;
     }
 
     /// <summary>
@@ -109,7 +85,7 @@ public class ModelMap
     /// </summary>
     /// <param name="converters">The value converters.</param>
     /// <returns>The ModelMap.</returns>
-    public ModelMap AddValueConverter(params IValueConverter[] converters)
+    public void AddValueConverter(params IValueConverter[] converters)
     {
         foreach (var valueConverter in converters)
         {
@@ -140,8 +116,6 @@ public class ModelMap
                 }
             }
         }
-
-        return this;
     }
 
     /// <summary>
@@ -151,27 +125,9 @@ public class ModelMap
     /// <param name="toValue">To value.</param>
     /// <param name="toString">To string.</param>
     /// <returns>The ModelMap.</returns>
-    public ModelMap AddValueConverter<T>(Func<string, T> toValue, Func<T, string> toString)
+    public void AddValueConverter<T>(Func<string, T> toValue, Func<T, string> toString)
     {
         this.AddValueConverter(new CustomValueConverter<T>(toValue, toString));
-        return this;
-    }
-
-    /// <summary>
-    ///     Gets the option.
-    /// </summary>
-    /// <param name="option">The option name.</param>
-    /// <returns>Zero or more values representing the value of the option.</returns>
-    /// <exception cref="UnknownOptionException">Thrown is the requested option is unknown.</exception>
-    public string[] GetOption(string option)
-    {
-        // TODO : support multiple values.
-        if (this.Options.TryGetValue(option, out var p))
-        {
-            return new[] { this.ConvertObjectToString(p.CurrentValue(), p.Property.PropertyType, p.Property) };
-        }
-
-        throw new UnknownOptionException(option, this.Options.Values);
     }
 
     /// <summary>
@@ -212,53 +168,22 @@ public class ModelMap
             throw new TooManyArgumentsException(infos.Select(s => s.Name).ToArray());
         }
 
-        var p = new List<object>();
-        for (var index = 0; index < infos.Length; index++)
-        {
-            var info = infos[index];
+        var parameterList = this.ParameterList(command, infos, arguments, token);
 
-            object o;
+        var result = method.Method.Invoke(method.Source, parameterList.ToArray());
 
-            if (arguments.Length <= index)
-            {
-                if (info.ParameterType == typeof(CancellationToken))
-                {
-                    o = token;
-                }
-                else
-                if (info.HasDefaultValue)
-                {
-                    o = info.DefaultValue;
-                }
-                else
-                {
-                    throw new MissingArgumentException(command, info.Name, infos.Select(s => s.Name).ToArray());
-                }
-            }
-            else
-            {
-                var type = info.ParameterType;
-                try
-                {
-                    o = this.ConvertStringToObject(arguments[index], type, info);
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidParameterFormatException(arguments[index], info, e);
-                }
-            }
+        result = GetResultFromTask(token, result, method);
 
-            p.Add(o);
-        }
+        return result;
+    }
 
-        // TODO : catch all the exceptions that can occur and map them
-        var result = method.Method.Invoke(method.Source, p.ToArray());
-
+    private static object GetResultFromTask(CancellationToken token, object result, ModelCommand method)
+    {
         if (result.GetType().IsSubclassOf(typeof(Task)))
         {
-            var task = (Task)result;
+            var task = (Task) result;
             {
-                taskFactory.StartNew(() => task).Unwrap().GetAwaiter().GetResult();
+                TaskFactory.StartNew(() => task, token).Unwrap().GetAwaiter().GetResult();
 
                 if (method.Method.ReturnType == typeof(Task))
                 {
@@ -275,23 +200,137 @@ public class ModelMap
         return result;
     }
 
+    private IEnumerable<object> ParameterList(string command, ParameterInfo[] infos, string[] arguments,
+        CancellationToken token)
+    {
+        for (var index = 0; index < infos.Length; index++)
+        {
+            var info = infos[index];
+
+            if (arguments.Length > index)
+            {
+                object result;
+                try
+                {
+                    result = this.ConvertStringToParameterValue(info, arguments[index]);
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidParameterFormatException(arguments[index], info, e);
+                }
+
+                yield return result;
+            }
+            else if (info.ParameterType == typeof(CancellationToken))
+            {
+                yield return token;
+            }
+            else if (info.HasDefaultValue)
+            {
+                yield return info.DefaultValue;
+            }
+            else
+            {
+                throw new MissingArgumentException(command, info.Name, infos.Select(s => s.Name).ToArray());
+            }
+        }
+    }
+
+    private object ConvertStringToParameterValue(ParameterInfo info, string stringValue)
+    {
+        object result;
+        var type = info.ParameterType;
+
+        if (info.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
+        {
+            result = con.ConvertToValue(stringValue, type);
+        }
+        else
+        {
+            if (this.TryGetConverter(type, out var converter))
+            {
+                result = converter.ConvertToValue(stringValue, type, info);
+            }
+            else
+            {
+                throw new ArgumentException("Unable to convert type");
+            }
+        }
+
+        var customValidatorAttributes = info.GetCustomAttributes<CustomValidatorAttribute>();
+        foreach (var validator in customValidatorAttributes)
+        {
+            validator.Validate(result);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    ///     Gets the option.
+    /// </summary>
+    /// <param name="option">The option name.</param>
+    /// <returns>Zero or more values representing the value of the option.</returns>
+    /// <exception cref="UnknownOptionException">Thrown is the requested option is unknown.</exception>
+    public string GetOption(string option)
+    {
+        if (!this.Options.TryGetValue(option, out var p))
+        {
+            throw new UnknownOptionException(option, this.Options.Values);
+        }
+
+        var value = p.CurrentValue();
+
+        var property = p.Property;
+        if (property.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
+        {
+            return con.ConvertToString(value);
+        }
+
+        if(this.TryGetConverter(p.Property.PropertyType, out var converter))
+        {
+            return converter.ConvertToString(value, property);
+        }
+
+        throw new ArgumentException("Unable to convert type");
+    }
+
     /// <summary>
     ///     Sets the option.
     /// </summary>
     /// <param name="option">The option.</param>
-    /// <param name="values">The values.</param>
+    /// <param name="value">The value.</param>
     /// <exception cref="InvalidArgumentFormatException">Thrown if the option can not be converted.</exception>
     /// <exception cref="UnknownOptionException">Thrown if the option is unknown.</exception>
-    public void SetOption(string option, params string[] values)
+    public void SetOption(string option, string value)
     {
-        // TODO : support multiple values.
-        var value = values.FirstOrDefault();
-
         if (this.Options.TryGetValue(option, out var p))
         {
             try
             {
-                p.Set(this.ConvertStringToObject(value, p.Property.PropertyType, p.Property));
+                object result;
+
+                if (p.Property.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
+                {
+                    result = con.ConvertToValue(value, p.Property.PropertyType);
+                }
+                else
+                {
+                    if (!this.TryGetConverter(p.Property.PropertyType, out var converter))
+                    {
+                        throw new ArgumentException("Unable to convert type");
+                    }
+
+                    result = converter.ConvertToValue(value, p.Property.PropertyType, p.Property);
+                }
+
+                var customValidatorAttributes = ((ICustomAttributeProvider) p.Property).GetCustomAttributes<CustomValidatorAttribute>();
+                foreach (var validator in customValidatorAttributes)
+                {
+                    validator.Validate(result);
+                }
+
+                p.Set(result);
             }
             catch (Exception e)
             {
@@ -304,76 +343,9 @@ public class ModelMap
         }
     }
 
-    /// <summary>
-    ///     Converts a object to string.
-    /// </summary>
-    /// <param name="value">The value.</param>
-    /// <param name="type">The type.</param>
-    /// <param name="customAttributeProvider">The custom attribute provider.</param>
-    /// <returns>A string representing the object.</returns>
-    /// <exception cref="ArgumentException">Unable to convert type</exception>
-    private string ConvertObjectToString(object value, Type type, ICustomAttributeProvider customAttributeProvider)
+    private bool TryGetConverter(Type type, out IValueConverter result)
     {
-        string result;
-
-        if (customAttributeProvider.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
-        {
-            result = con.ConvertToString(value);
-        }
-        else
-        {
-            var valueConverter = this.valueConverters.FirstOrDefault(converter => converter.CanConvert(type));
-            if (valueConverter != null)
-            {
-                result = valueConverter.ConvertToString(value, customAttributeProvider);
-            }
-            else
-            {
-                throw new ArgumentException("Unable to convert type");
-            }
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    ///     Converts the string to object.
-    /// </summary>
-    /// <param name="stringValue">The string value.</param>
-    /// <param name="type">The type.</param>
-    /// <param name="customAttributeProvider">The custom attribute provider.</param>
-    /// <returns>Converts a string to the specified object type.</returns>
-    /// <exception cref="ArgumentException">Unable to convert type</exception>
-    private object ConvertStringToObject(
-        string stringValue,
-        Type type,
-        ICustomAttributeProvider customAttributeProvider)
-    {
-        object result;
-
-        if (customAttributeProvider.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
-        {
-            result = con.ConvertToValue(stringValue, type);
-        }
-        else
-        {
-            var valueConverter = this.valueConverters.FirstOrDefault(converter => converter.CanConvert(type));
-            if (valueConverter != null)
-            {
-                result = valueConverter.ConvertToValue(stringValue, type, customAttributeProvider);
-            }
-            else
-            {
-                throw new ArgumentException("Unable to convert type");
-            }
-        }
-
-        var customValidatorAttributes = customAttributeProvider.GetCustomAttributes<CustomValidatorAttribute>();
-        foreach (var validator in customValidatorAttributes)
-        {
-            validator.Validate(result);
-        }
-
-        return result;
+        result = this.valueConverters.FirstOrDefault(converter => converter.CanConvert(type));
+        return result != null;
     }
 }

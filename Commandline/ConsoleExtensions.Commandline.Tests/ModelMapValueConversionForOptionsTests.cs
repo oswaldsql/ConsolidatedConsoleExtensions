@@ -184,7 +184,7 @@ public class ModelMapValueConversionForOptionsTests
         modelMap.SetOption("IntOption", "123");
 
         // Assert
-        Assert.Equal("123", modelMap.GetOption("IntOption")[0]);
+        Assert.Equal("123", modelMap.GetOption("IntOption"));
         Assert.Equal(123, model.IntOption);
     }
 
@@ -202,7 +202,7 @@ public class ModelMapValueConversionForOptionsTests
         modelMap.SetOption("StringOption", "123");
 
         // Assert
-        Assert.Equal("123", modelMap.GetOption("StringOption")[0]);
+        Assert.Equal("123", modelMap.GetOption("StringOption"));
         Assert.Equal("123", model.StringOption);
     }
 

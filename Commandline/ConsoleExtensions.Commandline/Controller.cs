@@ -153,7 +153,7 @@ public class Controller
 
             foreach (var argument in arguments.Properties)
             {
-                this.ModelMap.SetOption(argument.Key, argument.Value.ToArray());
+                this.ModelMap.SetOption(argument.Key, argument.Value.First());
             }
 
             var tokenSource = new CancellationTokenSource();

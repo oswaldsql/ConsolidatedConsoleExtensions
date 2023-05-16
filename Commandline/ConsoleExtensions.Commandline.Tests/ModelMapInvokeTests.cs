@@ -124,7 +124,7 @@ public class ModelMapInvokeTests
         // Act
         var sut = ModelParser.Parse(model);
         var dummy = "PrevValue";
-        var actualException = Record.Exception(() => dummy = sut.GetOption("UnknownOption")[0]);
+        var actualException = Record.Exception(() => dummy = sut.GetOption("UnknownOption"));
 
         // Assert
         Assert.IsType<UnknownOptionException>(actualException);
@@ -166,7 +166,7 @@ public class ModelMapInvokeTests
 
         // Act
         var sut = ModelParser.Parse(model);
-        var actualException = Record.Exception(() => sut.GetOption("UnknownOption")[0] == "test");
+        var actualException = Record.Exception(() => sut.GetOption("UnknownOption") == "test");
 
         // Assert
         Assert.IsType<UnknownOptionException>(actualException);
@@ -189,7 +189,7 @@ public class ModelMapInvokeTests
         actual.SetOption("Option", "OptionValue");
 
         // Assert
-        Assert.Equal("OptionValue", actual.GetOption("Option")[0]);
+        Assert.Equal("OptionValue", actual.GetOption("Option"));
     }
 
     /// <summary>

@@ -32,7 +32,7 @@ public class ValueConverterTests
         modelMap.SetOption("CustomTypeOption", "CustomValue");
 
         // Assert
-        Assert.Equal("CUSTOMVALUE", modelMap.GetOption("CustomTypeOption")[0]);
+        Assert.Equal("CUSTOMVALUE", modelMap.GetOption("CustomTypeOption"));
         Assert.Equal("customvalue", model.CustomTypeOption.InternalValue);
     }
 
@@ -66,7 +66,7 @@ public class ValueConverterTests
         modelMap.SetOption("IntOption", "123");
 
         // Assert
-        Assert.Equal("123", modelMap.GetOption("IntOption")[0]);
+        Assert.Equal("123", modelMap.GetOption("IntOption"));
         Assert.Equal(123, model.IntOption);
         Assert.True(toObjCalled);
         Assert.True(toStringCalled);

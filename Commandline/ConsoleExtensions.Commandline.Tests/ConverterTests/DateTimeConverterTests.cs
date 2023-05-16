@@ -41,7 +41,7 @@ public class DateTimeConverterTests
 
         // Act
         sut.SetOption("DateTimeValue", "2019-01-13");
-        var actual = sut.GetOption("DateTimeValue").First();
+        var actual = sut.GetOption("DateTimeValue");
 
         // Assert
         Assert.Equal(new DateTime(2019, 1, 13), model.DateTimeValue);
@@ -61,7 +61,7 @@ public class DateTimeConverterTests
 
         // Act
         sut.SetOption("TimeSpanValue", "01:02:03");
-        var actual = sut.GetOption("TimeSpanValue").First();
+        var actual = sut.GetOption("TimeSpanValue");
 
         // Assert
         Assert.Equal(3723, model.TimeSpanValue.TotalSeconds);
