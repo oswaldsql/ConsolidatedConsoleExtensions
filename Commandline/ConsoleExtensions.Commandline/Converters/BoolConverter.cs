@@ -18,7 +18,7 @@ using System.Reflection;
 /// </summary>
 /// <seealso cref="ConsoleExtensions.Commandline.Converters.IValueConverter" />
 /// <seealso cref="IValueConverter" />
-public class BoolConverter : IValueConverter
+public class BoolConverter : ValueConverterBack
 {
     /// <summary>
     ///     The value mapper containing all default mappings.
@@ -46,14 +46,14 @@ public class BoolConverter : IValueConverter
     /// <summary>
     ///     Gets the priority of the converter.
     /// </summary>
-    public ConverterPriority Priority => ConverterPriority.Default;
+    public  override ConverterPriority Priority => ConverterPriority.Default;
 
     /// <summary>
     ///     Determines whether this instance can convert the specified type.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns><c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.</returns>
-    public bool CanConvert(Type type)
+    protected  override bool CanConvert(Type type)
     {
         return type == typeof(bool);
     }
@@ -64,7 +64,7 @@ public class BoolConverter : IValueConverter
     /// <param name="source">The source.</param>
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
     /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-    public string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider)
+    protected override  string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider)
     {
         return source.ToString();
     }
@@ -77,7 +77,7 @@ public class BoolConverter : IValueConverter
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
     /// <returns>A object of the specified type.</returns>
     /// <exception cref="ArgumentException">Thrown if the conversion was not a success.</exception>
-    public object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider)
+    protected override  object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider)
     {
         if (source == null)
         {

@@ -22,26 +22,56 @@ public interface IValueConverter
     ConverterPriority Priority { get; }
 
     /// <summary>
-    ///     Determines whether this instance can convert the specified type.
-    /// </summary>
-    /// <param name="type">The type.</param>
-    /// <returns><c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.</returns>
-    bool CanConvert(Type type);
-
-    /// <summary>
-    ///     Converts a value to a string.
+    /// Converts a value to a string.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
-    /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-    string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider);
+    /// <param name="result">The result.</param>
+    /// <returns></returns>
+    bool TryConvertToString(object source, ICustomAttributeProvider customAttributeProvider, out string result);
 
     /// <summary>
-    ///     Converts a string to a value of the specified type.
+    /// Tries to convert a string source to a type safe value.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="type">The type.</param>
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
-    /// <returns>A object of the specified type.</returns>
-    object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider);
+    /// <param name="result">The result.</param>
+    /// <returns></returns>
+    bool TryConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider, out object result);
+}
+
+public abstract class ValueConverterBack : IValueConverter
+{
+    public virtual ConverterPriority Priority { get; }
+
+    protected abstract bool CanConvert(Type type);
+
+    protected abstract string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider);
+
+    protected abstract object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider);
+
+    public virtual bool TryConvertToString(object source, ICustomAttributeProvider customAttributeProvider, out string result)
+    {
+        if (!this.CanConvert(source.GetType()))
+        {
+            result = "";
+            return false;
+        }
+
+        result = this.ConvertToString(source, customAttributeProvider);
+        return true;
+    }
+
+    public bool TryConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider, out object result)
+    {
+        if (!this.CanConvert(type))
+        {
+            result = "";
+            return false;
+        }
+
+        result = this.ConvertToValue(source, type, customAttributeProvider);
+        return true;
+    }
 }

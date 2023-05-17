@@ -8,6 +8,7 @@
 namespace ConsoleExtensions.Commandline.Tests.ConverterTests;
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 using Converters.Custom;
@@ -242,6 +243,19 @@ public class BoolConverterTests
         var onGet = actualOnGet as ArgumentException;
         Assert.NotNull(onGet);
     }
+
+    [Fact]
+    public void FactMethodName()
+    {
+        // Arrange
+        var sut = new Int32Converter() as TypeConverter;
+
+        // Act
+        Console.WriteLine(sut.ConvertFrom("234"));
+
+        // Assert
+    }
+
 
     /// <summary>
     ///     Class Mock.

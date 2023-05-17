@@ -9,6 +9,8 @@ namespace ConsoleExtensions.Commandline.Parser;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -18,7 +20,7 @@ using Converters;
 using Converters.Custom;
 using Exceptions;
 using Util;
-using Validators;
+using EnumConverter = Converters.EnumConverter;
 
 /// <summary>
 ///     Class ModelMap. Handles the translation of command and options to methods and properties.
@@ -43,11 +45,14 @@ public class ModelMap
         this.Commands = commands.ToDictionary(t => t.Name, StringComparer.InvariantCultureIgnoreCase);
 
         this.AddValueConverter(
+            new ConvertUsingTypeConverter(),
+            new CustomConverter(),
             new EnumConverter(),
             new ConvertibleConverter(),
             new IoConverter(),
             new BoolConverter(),
-            new TimeSpanValueConverter());
+            new TimeSpanValueConverter(),
+            new Converters.StringConverter());
     }
 
     /// <summary>
@@ -219,6 +224,14 @@ public class ModelMap
                     throw new InvalidParameterFormatException(arguments[index], info, e);
                 }
 
+                foreach (var attribute in info.GetCustomAttributes<ValidationAttribute>())
+                {
+                    if (!attribute.IsValid(result))
+                    {
+                        throw new ArgumentException(attribute.FormatErrorMessage(info.Name));
+                    }
+                }
+
                 yield return result;
             }
             else if (info.ParameterType == typeof(CancellationToken))
@@ -238,29 +251,13 @@ public class ModelMap
 
     private object ConvertStringToParameterValue(ParameterInfo info, string stringValue)
     {
-        object result;
+        object result = null;
         var type = info.ParameterType;
 
-        if (info.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
+        var found = this.valueConverters.FirstOrDefault(valueConverter => valueConverter.TryConvertToValue(stringValue, type, info, out result));
+        if (found == null)
         {
-            result = con.ConvertToValue(stringValue, type);
-        }
-        else
-        {
-            if (this.TryGetConverter(type, out var converter))
-            {
-                result = converter.ConvertToValue(stringValue, type, info);
-            }
-            else
-            {
-                throw new ArgumentException("Unable to convert type");
-            }
-        }
-
-        var customValidatorAttributes = info.GetCustomAttributes<CustomValidatorAttribute>();
-        foreach (var validator in customValidatorAttributes)
-        {
-            validator.Validate(result);
+            throw new ArgumentException("Unable to convert type");
         }
 
         return result;
@@ -282,14 +279,13 @@ public class ModelMap
         var value = p.CurrentValue();
 
         var property = p.Property;
-        if (property.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
-        {
-            return con.ConvertToString(value);
-        }
 
-        if(this.TryGetConverter(p.Property.PropertyType, out var converter))
+        foreach (var valueConverter in this.valueConverters)
         {
-            return converter.ConvertToString(value, property);
+            if (valueConverter.TryConvertToString(value, property, out var result))
+            {
+                return result;
+            }
         }
 
         throw new ArgumentException("Unable to convert type");
@@ -308,26 +304,22 @@ public class ModelMap
         {
             try
             {
-                object result;
+                object result = null;
 
-                if (p.Property.TryGetCustomAttribute<CustomConverterAttribute>(out var con))
+                var found = this.valueConverters.FirstOrDefault(valueConverter =>
+                    valueConverter.TryConvertToValue(value, p.Property.PropertyType, p.Property, out result));
+
+                if (found == null)
                 {
-                    result = con.ConvertToValue(value, p.Property.PropertyType);
+                    throw new ArgumentException("Unable to convert type");
                 }
-                else
+
+                foreach (var attribute in p.Property.GetCustomAttributes<ValidationAttribute>())
                 {
-                    if (!this.TryGetConverter(p.Property.PropertyType, out var converter))
+                    if (!attribute.IsValid(result))
                     {
-                        throw new ArgumentException("Unable to convert type");
+                        throw new ArgumentException(attribute.FormatErrorMessage(option));
                     }
-
-                    result = converter.ConvertToValue(value, p.Property.PropertyType, p.Property);
-                }
-
-                var customValidatorAttributes = ((ICustomAttributeProvider) p.Property).GetCustomAttributes<CustomValidatorAttribute>();
-                foreach (var validator in customValidatorAttributes)
-                {
-                    validator.Validate(result);
                 }
 
                 p.Set(result);
@@ -341,11 +333,5 @@ public class ModelMap
         {
             throw new UnknownOptionException(option, this.Options.Values);
         }
-    }
-
-    private bool TryGetConverter(Type type, out IValueConverter result)
-    {
-        result = this.valueConverters.FirstOrDefault(converter => converter.CanConvert(type));
-        return result != null;
     }
 }

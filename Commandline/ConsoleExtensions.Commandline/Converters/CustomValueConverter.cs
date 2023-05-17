@@ -16,7 +16,7 @@ using System.Reflection;
 /// </summary>
 /// <typeparam name="T">The type of object to converts to and from.</typeparam>
 /// <seealso cref="IValueConverter" />
-public class CustomValueConverter<T> : IValueConverter
+public class CustomValueConverter<T> : ValueConverterBack
 {
     /// <summary>
     ///     The function used when converting to string.
@@ -49,7 +49,7 @@ public class CustomValueConverter<T> : IValueConverter
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns><c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.</returns>
-    public bool CanConvert(Type type)
+    protected override  bool CanConvert(Type type)
     {
         return type == typeof(T);
     }
@@ -60,7 +60,7 @@ public class CustomValueConverter<T> : IValueConverter
     /// <param name="source">The source.</param>
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
     /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-    public string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider)
+    protected override  string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider)
     {
         return this.toString(source);
     }
@@ -72,7 +72,7 @@ public class CustomValueConverter<T> : IValueConverter
     /// <param name="type">The type.</param>
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
     /// <returns>A object of the specified type.</returns>
-    public object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider)
+    protected  override object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider)
     {
         return this.toValue(source);
     }

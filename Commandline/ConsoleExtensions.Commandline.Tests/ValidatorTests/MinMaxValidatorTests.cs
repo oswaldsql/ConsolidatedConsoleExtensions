@@ -7,9 +7,11 @@
 
 namespace ConsoleExtensions.Commandline.Tests.ValidatorTests;
 
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Exceptions;
 using Parser;
-using Validators;
 
 using Xunit;
 
@@ -80,6 +82,20 @@ public class MinMaxValidatorTests
         Assert.Equal(10, model.IntValue);
     }
 
+    [Fact]
+    public void FactMethodName()
+    {
+        // Arrange
+        var model = new Mock();
+        var sut = ModelParser.Parse(model);
+
+        // Act
+        var actual = sut.Invoke("DoSomething", "12");
+
+        // Assert
+        Assert.Equal("12", actual);
+    }
+
     /// <summary>
     ///     Class Mock.
     /// </summary>
@@ -91,7 +107,7 @@ public class MinMaxValidatorTests
         /// <value>
         ///     <c>true</c> if [bool value]; otherwise, <c>false</c> .
         /// </value>
-        [MinMaxValidator(10, 20)]
+        [Range(10, 20)]
         public bool BoolValue { get; set; }
 
         /// <summary>
@@ -100,7 +116,15 @@ public class MinMaxValidatorTests
         /// <value>
         ///     The <see langword="int" /> value.
         /// </value>
-        [MinMaxValidator(10, 23)]
+        [Range(10, 23)]
         public int IntValue { get; set; }
+
+        [TypeConverter(typeof(DateTimeConverter))]
+        public DateTime Date { get; set; }
+
+        public string DoSomething([Range(10, 20)] int value)
+        {
+            return value.ToString();
+        }
     }
 }

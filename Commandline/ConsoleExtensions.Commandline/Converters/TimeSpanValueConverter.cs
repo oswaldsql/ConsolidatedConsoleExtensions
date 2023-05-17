@@ -15,20 +15,20 @@ using System.Reflection;
 /// Implements the <see cref="ConsoleExtensions.Commandline.Converters.IValueConverter" />
 /// </summary>
 /// <seealso cref="ConsoleExtensions.Commandline.Converters.IValueConverter" />
-public class TimeSpanValueConverter : IValueConverter
+public class TimeSpanValueConverter : ValueConverterBack
 {
     /// <summary>
     /// Gets the priority of the converter.
     /// </summary>
     /// <value>The priority.</value>
-    public ConverterPriority Priority => ConverterPriority.Default;
+    public override  ConverterPriority Priority => ConverterPriority.Default;
 
     /// <summary>
     /// Determines whether this instance can convert the specified type.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns><c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.</returns>
-    public bool CanConvert(Type type)
+    protected override  bool CanConvert(Type type)
     {
         return type == typeof(TimeSpan);
     }
@@ -39,7 +39,7 @@ public class TimeSpanValueConverter : IValueConverter
     /// <param name="source">The source.</param>
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
     /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-    public string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider)
+    protected  override string ConvertToString(object source, ICustomAttributeProvider customAttributeProvider)
     {
         return source.ToString();
     }
@@ -51,7 +51,7 @@ public class TimeSpanValueConverter : IValueConverter
     /// <param name="type">The type.</param>
     /// <param name="customAttributeProvider">The custom attribute provider.</param>
     /// <returns>A object of the specified type.</returns>
-    public object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider)
+    protected override object ConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider)
     {
         return TimeSpan.Parse(source);
     }

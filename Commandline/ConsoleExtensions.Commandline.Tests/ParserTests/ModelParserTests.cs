@@ -8,6 +8,7 @@
 namespace ConsoleExtensions.Commandline.Tests.ParserTests;
 
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Parser;
 
@@ -198,6 +199,7 @@ public class ModelParserTests
         [Description("Description for option from attribute")]
         public string OptionWithMetadata { get; set; }
 
+        [System.ComponentModel.DataAnnotations.MaxLength]
         private string PrivateOption { get; set; }
         internal string InternalOption { get; set; }
 
