@@ -1,6 +1,7 @@
 ﻿namespace ConsoleExtensions.Commandline.Tests.ConverterTests;
 
 using System;
+using System.Collections;
 using Converters;
 using Xunit;
 
@@ -37,26 +38,18 @@ public class EmptyArgumentTests
         var boolean = Assert.IsType<bool>(result);
         Assert.True(boolean, "Should convert to true.");
     }
-}
-
-public class EnumArgumentTests
-{
-    // Single enums are mapped
-    // Flags enums are mapped
-    // Empty args are mapped to the default value.
 
     [Fact]
-    public void FactMethodName()
+    public void WillNotMapEmptyToFalse()
     {
         // Arrange
-        var sut = new EnumConverter();
+        var sut = new EmptyArgumentConverter();
 
         // Act
-        var actual = sut.TryConvertToValue("monday", typeof(DayOfWeek), null, out var result);
+        var actual = sut.TryConvertToValue(null, typeof(int), null, out var result);
 
         // Assert
-        Assert.True(actual, "Should convert.");
-        var monday = Assert.IsType<DayOfWeek>(result);
-        Assert.Equal(DayOfWeek.Monday, monday);
+        Assert.False(actual, "Should not convert.");
+        Assert.Null(result);
     }
 }
