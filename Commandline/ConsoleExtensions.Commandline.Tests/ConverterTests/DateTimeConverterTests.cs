@@ -9,10 +9,7 @@ namespace ConsoleExtensions.Commandline.Tests.ConverterTests;
 
 using System;
 using System.Globalization;
-using System.Linq;
-
 using Parser;
-
 using Xunit;
 
 /// <summary>
@@ -40,12 +37,12 @@ public class DateTimeConverterTests
         var sut = ModelParser.Parse(model);
 
         // Act
-        sut.SetOption("DateTimeValue", "2019-01-13");
+        sut.SetOption("DateTimeValue", "2019-01-13 01:02:03");
         var actual = sut.GetOption("DateTimeValue");
 
         // Assert
-        Assert.Equal(new DateTime(2019, 1, 13), model.DateTimeValue);
-        Assert.Equal("2019-01-13 00:00:00", actual);
+        Assert.Equal(new DateTime(2019, 1, 13, 01,02,03), model.DateTimeValue);
+        Assert.Equal("2019-01-13 1:02 AM", actual);
     }
 
     /// <summary>

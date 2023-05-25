@@ -9,7 +9,6 @@ namespace ConsoleExtensions.Commandline.Parser;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -17,9 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Converters;
-using Converters.Custom;
 using Exceptions;
-using Util;
 using EnumConverter = Converters.EnumConverter;
 
 /// <summary>
@@ -45,12 +42,12 @@ public class ModelMap
         this.Commands = commands.ToDictionary(t => t.Name, StringComparer.InvariantCultureIgnoreCase);
 
         this.AddValueConverter(
+            new EmptyArgumentConverter(),
             new ConvertUsingTypeConverter(),
-            new CustomConverter(),
+            new WellKnowTypeMapper(),
             new EnumConverter(),
             new ConvertibleConverter(),
             new IoConverter(),
-            new BoolConverter(),
             new TimeSpanValueConverter(),
             new Converters.StringConverter());
     }

@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoleExtensions.Commandline.Tests;
+namespace ConsoleExtensions.Commandline.Tests.ConverterTests;
 
 using System;
 using Parser;
@@ -116,14 +116,14 @@ public class ValueConverterTests
     {
         /// <summary>
         ///     Initializes a new instance of the
-        ///     <see cref="ValueConverterTests.CustomType" /> class.
+        ///     <see cref="CustomType" /> class.
         /// </summary>
         /// <param name="internalValue">
         ///     The <see langword="internal" /> value.
         /// </param>
         public CustomType(string internalValue)
         {
-            this.InternalValue = internalValue.ToLower();
+            InternalValue = internalValue.ToLower();
         }
 
         /// <summary>
