@@ -7,13 +7,6 @@ using Xunit;
 
 public class EnumArgumentTests
 {
-    // Single enums are mapped by name.
-    // Enums are not case sensitive
-    // Enums can be mapped from their integer value 
-    // Flags enums are mapped
-    // Empty args are mapped to the default value.
-    // Invalid args are not mapped.
-
     [Fact]
     public void EnumsAreMappedByName()
     {
@@ -44,7 +37,6 @@ public class EnumArgumentTests
         Assert.Equal(DayOfWeek.Monday, monday);
     }
 
-    
     [Fact]
     public void EnumsCanBeMappedFromTheirIntegerValue()
     {
@@ -105,7 +97,7 @@ public class EnumArgumentTests
     }
 
     [Fact]
-    public void WillNotMapFromAnyType()
+    public void WillNotMapFromNoneEnumType()
     {
         // Arrange
         var sut = new EnumConverter();
@@ -133,7 +125,7 @@ public class EnumArgumentTests
     }
 
     [Fact]
-    public void WillNotMapToAnyTypeWhenEmpty()
+    public void WillNotMapToNoneEnumTypeWhenEmpty()
     {
         // Arrange
         var sut = new EnumConverter();
@@ -147,7 +139,7 @@ public class EnumArgumentTests
     }
 
     [Fact]
-    public void WillNotMapToAnyTypeWhenInvalid()
+    public void WillNotMapToNoneEnumTypeWhenInvalid()
     {
         // Arrange
         var sut = new EnumConverter();
@@ -158,5 +150,33 @@ public class EnumArgumentTests
         // Assert
         Assert.False(actual, "Should not convert.");
         Assert.Equal("", result);
+    }
+
+    [Fact]
+    public void ReturnsTheStringRepresentationOfTheEnumAsString()
+    {
+        // Arrange
+        var sut = new EnumConverter();
+
+        // Act
+        var actual = sut.TryConvertToString(DayOfWeek.Monday, null, out var result);
+
+        // Assert
+        Assert.True(actual, "Should convert.");
+        Assert.Equal("Monday", result);
+    }
+
+    [Fact]
+    public void ReturnsTheStringRepresentationOfAFlagsEnumAsString()
+    {
+        // Arrange
+        var sut = new EnumConverter();
+
+        // Act
+        var actual = sut.TryConvertToString(RegexOptions.Compiled | RegexOptions.IgnoreCase, null, out var result);
+
+        // Assert
+        Assert.True(actual, "Should convert.");
+        Assert.Equal("IgnoreCase, Compiled", result);
     }
 }

@@ -6,6 +6,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 
+/// <summary>
+/// Maps well known by using build in type converters.
+/// </summary>
 public class WellKnowTypeMapper : IValueConverter
 {
     private static readonly Dictionary<Type, Func<TypeConverter>> converters = new()
@@ -27,8 +30,10 @@ public class WellKnowTypeMapper : IValueConverter
         {typeof(TimeSpan), () => new TimeSpanConverter()},
     };
 
+    /// <inheritdoc/>
     public ConverterPriority Priority => ConverterPriority.Default;
 
+    /// <inheritdoc/>
     public bool TryConvertToString(object source, ICustomAttributeProvider customAttributeProvider, out string result)
     {
         if (converters.TryGetValue(source.GetType(), out var converter))
@@ -41,6 +46,7 @@ public class WellKnowTypeMapper : IValueConverter
         return false;
     }
 
+    /// <inheritdoc/>
     public bool TryConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider, out object result)
     {
         if (converters.TryGetValue(source.GetType(), out var converter))

@@ -1,15 +1,10 @@
 ﻿namespace ConsoleExtensions.Commandline.Tests.ConverterTests;
 
-using System;
-using System.Collections;
 using Converters;
 using Xunit;
 
 public class EmptyArgumentTests
 {
-    // Empty arguments are mapped to true when set on a bool
-    // Empty arguments returns false when set on a none bool value
-
     [Fact]
     public void WillNotMapFromAnyType()
     {
