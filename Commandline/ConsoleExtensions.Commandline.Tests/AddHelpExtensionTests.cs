@@ -18,6 +18,12 @@ using Xunit;
 /// </summary>
 public class AddHelpExtensionTests
 {
+    // When a model contains a help method then this is used
+    // When a model contains a help method and the help method contains a topic then this is used
+    // When a model dos not contain a help method the generic help method is used
+    // The generic help 
+    
+
     /// <summary>
     ///     Given a model when a help method exists then add help dos not
     ///     add help.

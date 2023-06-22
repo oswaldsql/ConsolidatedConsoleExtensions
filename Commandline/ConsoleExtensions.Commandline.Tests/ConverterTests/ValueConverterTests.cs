@@ -8,8 +8,94 @@
 namespace ConsoleExtensions.Commandline.Tests.ConverterTests;
 
 using System;
+using System.Globalization;
+using ConsoleExtensions.Commandline.Converters;
 using Parser;
 using Xunit;
+
+public class WellKnowTypeMapperTests
+{
+    // Create tests for WellKnowTypeMapper
+    [Theory]
+    [InlineData(typeof(bool), "true")]
+    [InlineData(typeof(int), "123")]
+    [InlineData(typeof(byte), "123")]
+    [InlineData(typeof(char), "c")]
+    [InlineData(typeof(CultureInfo), "en-gb")]
+    [InlineData(typeof(DateTime), "2014-01-02")]
+    [InlineData(typeof(DateTimeOffset), "2014-01-02")]
+    [InlineData(typeof(decimal), "123.456")]
+    [InlineData(typeof(double), "123.456")]
+    [InlineData(typeof(Guid), "8E4ED524-FE8D-49DF-AA6E-1EE4A004BEFF")]
+    [InlineData(typeof(short), "123")]
+    [InlineData(typeof(long), "123")]
+    [InlineData(typeof(sbyte), "123")]
+    [InlineData(typeof(float), "123.456")]
+    [InlineData(typeof(TimeSpan), "01:01:01")]
+    public void WellKnowTypeMapperCanConvertToWellKnowTypes(Type type, string input)
+    {
+        // Arrange
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+        var mapper = new WellKnowTypeMapper();
+        // Act
+        var result = mapper.TryConvertToValue(input, type, null, out var obj);
+        // Assert
+        Assert.True(result);
+        //Assert.Equal(Convert.ChangeType(input, type, CultureInfo.InvariantCulture), obj);
+    }
+
+    [Fact]
+    public void WellKnowTypeMapperCanConvertToBool()
+    {
+        // Arrange
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+        var mapper = new WellKnowTypeMapper();
+        // Act
+        var result = mapper.TryConvertToValue("True", typeof(bool), null, out var obj);
+        // Assert
+        Assert.True(result);
+        Assert.Equal(true, obj);
+    }
+
+    [Fact]
+    public void WellKnowTypeMapperCanConvertToNullableBool()
+    {
+        // Arrange
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+        var mapper = new WellKnowTypeMapper();
+        // Act
+        var result = mapper.TryConvertToValue("True", typeof(bool), null, out var obj);
+        // Assert
+        Assert.True(result);
+        Assert.Equal(true, obj);
+    }
+
+    [Fact]
+    public void WellKnowTypeMapperCanConvertToNullableInt()
+    {
+        // Arrange
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+        var mapper = new WellKnowTypeMapper();
+        // Act
+        var result = mapper.TryConvertToValue("123", typeof(int), null, out var obj);
+        // Assert
+        Assert.True(result);
+        Assert.Equal(123, obj);
+    }
+
+    [Fact]
+    public void WellKnowTypeMapperCanConvertToNullableDouble()
+    {
+        // Arrange
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+        var mapper = new WellKnowTypeMapper();
+        // Act
+        var result = mapper.TryConvertToValue("123.456", typeof(double), null, out var obj);
+        // Assert
+        Assert.True(result);
+        Assert.Equal(123.456, obj);
+    }
+}
 
 /// <summary>
 ///     Class ValueConverter.

@@ -42,7 +42,7 @@ public class DateTimeConverterTests
 
         // Assert
         Assert.Equal(new DateTime(2019, 1, 13, 01,02,03), model.DateTimeValue);
-        Assert.Equal("2019-01-13 1:02 AM", actual);
+        Assert.Equal("2019-01-13 01:02:03", actual);
     }
 
     /// <summary>

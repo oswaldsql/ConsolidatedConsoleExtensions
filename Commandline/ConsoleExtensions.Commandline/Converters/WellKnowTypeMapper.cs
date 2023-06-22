@@ -13,22 +13,28 @@ public class WellKnowTypeMapper : IValueConverter
 {
     private static readonly Dictionary<Type, Func<TypeConverter>> converters = new()
     {
-        {typeof(bool), () => new BooleanConverter()},
         {typeof(int), () => new Int32Converter()},
         {typeof(byte), () => new ByteConverter()},
-        {typeof(char), () => new CharConverter()},
-        {typeof(CultureInfo), () => new CultureInfoConverter()},
         {typeof(DateTime), () => new DateTimeConverter()},
-        {typeof(DateTimeOffset), () => new DateTimeOffsetConverter()},
-        {typeof(decimal), () => new DecimalConverter()},
         {typeof(double), () => new DoubleConverter()},
-        {typeof(Guid), () => new GuidConverter()},
         {typeof(short), () => new Int16Converter()},
         {typeof(long), () => new Int64Converter()},
         {typeof(sbyte), () => new SByteConverter()},
         {typeof(float), () => new SingleConverter()},
-        {typeof(TimeSpan), () => new TimeSpanConverter()},
     };
+
+    private static readonly Dictionary<Type, Func<string, object>> convertFunctions = new()
+    {
+        {typeof(bool), str => Boolean.Parse(str)},
+        {typeof(char), str => Char.Parse(str)},
+        {typeof(CultureInfo), str => CultureInfo.GetCultureInfo(str)},
+        {typeof(DateTime), str => DateTime.Parse(str)},
+        {typeof(DateTimeOffset), str => DateTimeOffset.Parse(str)},
+        {typeof(decimal), str => decimal.Parse(str)},
+        {typeof(Guid), str => Guid.Parse(str)},
+        {typeof(TimeSpan), str => TimeSpan.Parse(str)},
+    };
+
 
     /// <inheritdoc/>
     public ConverterPriority Priority => ConverterPriority.Default;
@@ -36,6 +42,12 @@ public class WellKnowTypeMapper : IValueConverter
     /// <inheritdoc/>
     public bool TryConvertToString(object source, ICustomAttributeProvider customAttributeProvider, out string result)
     {
+        if(convertFunctions.TryGetValue(source.GetType(), out var convertFunction))
+        {
+            result = source.ToString();
+            return true;
+        }
+
         if (converters.TryGetValue(source.GetType(), out var converter))
         {
             result = converter().ConvertToString(source);
@@ -49,7 +61,13 @@ public class WellKnowTypeMapper : IValueConverter
     /// <inheritdoc/>
     public bool TryConvertToValue(string source, Type type, ICustomAttributeProvider customAttributeProvider, out object result)
     {
-        if (converters.TryGetValue(source.GetType(), out var converter))
+        if(convertFunctions.TryGetValue(type, out var convertFunction))
+        {
+            result = convertFunction(source);
+            return true;
+        }
+
+        if (converters.TryGetValue(type, out var converter))
         {
             result = converter().ConvertTo(source, type);
             return true;

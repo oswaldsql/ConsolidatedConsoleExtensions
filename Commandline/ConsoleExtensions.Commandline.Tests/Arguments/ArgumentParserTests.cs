@@ -18,6 +18,20 @@ using Xunit;
 public class ArgumentParserTests
 {
     [Fact]
+    public void NoArgumentsReturnsHelpCommand()
+    {
+        // Arrange
+
+        // Act
+        var actual = ArgumentParser.Parse();
+
+        // Assert
+        Assert.Equal("Help", actual.Command);
+        Assert.Empty(actual.Arguments);
+        Assert.Empty(actual.Properties);
+    }
+
+    [Fact]
     public void FirstArgumentIsTheCommand()
     {
         // Arrange
